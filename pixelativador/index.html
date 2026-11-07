@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ativador de Pixel</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --border: #e5e5e7;
+    --text: #161823;
+    --text-muted: #606168;
+    --blue: #1D74F5;
+    --pink: #FE2C55;
+    --card-bg: #0d0e15;
+    --card-bg-inner: #15161e;
+    --card-border: #22232d;
+    --card-text: #ffffff;
+    --card-text-muted: #9596a0;
+    --card-text-subtle: #6e6f78;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { padding: 24px 16px; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  @media (min-width: 768px) { .wrap { padding: 40px 24px; } }
+
+  h1 { font-size: 24px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px; }
+  @media (min-width: 768px) { h1 { font-size: 28px; } }
+  .subtitle { font-size: 14px; color: var(--text-muted); margin: 6px 0 0; }
+
+  .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .stripe { height: 3px; width: 100%; background: linear-gradient(90deg, var(--blue) 0%, #4a8bf7 40%, var(--pink) 100%); }
+  .card-body { padding: 24px; }
+  @media (min-width: 768px) { .card-body { padding: 32px; } }
+
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--card-text-muted); display: block; }
+  .section-sub { font-size: 12px; color: var(--card-text-subtle); margin: 4px 0 0; }
+
+  label.field-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--card-text-muted); display: block; margin-bottom: 6px; }
+  input[type="text"] {
+    height: 40px; padding: 0 12px; border-radius: 6px; font-size: 14px; font-family: monospace;
+    background: var(--card-bg-inner); color: var(--card-text); border: 1px solid var(--card-border);
+    outline: none; width: 100%;
+  }
+  input[type="text"]:disabled { opacity: .6; cursor: not-allowed; }
+  input[type="text"]:focus { border-color: var(--blue); }
+
+  .field { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+
+  .paises { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pais-btn {
+    border-radius: 6px; padding: 12px; text-align: left; cursor: pointer;
+    background: var(--card-bg-inner); color: var(--card-text); border: 1px solid var(--card-border);
+    transition: all .15s;
+  }
+  .pais-btn.ativo { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .pais-btn:disabled { opacity: .6; cursor: not-allowed; }
+  .pais-row { display: flex; align-items: center; gap: 8px; }
+  .pais-flag { border-radius: 3px; }
+  .pais-nome { font-size: 14px; font-weight: 600; margin: 0; }
+  .pais-moeda { font-size: 10px; margin: 0; color: var(--card-text-muted); }
+  .pais-btn.ativo .pais-moeda { color: rgba(255,255,255,.8); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border-radius: 6px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; transition: all .15s; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-accent { background: var(--pink); color: #fff; height: 40px; padding: 0 16px; }
+  .btn-ativo { display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; height: 40px; border-radius: 6px; background: rgba(29,116,245,.15); border: 1px solid var(--blue); color: var(--blue); font-size: 14px; font-weight: 700; }
+
+  .divider { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--card-border); }
+  .header-row { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  .eventos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
+  @media (min-width: 480px) { .eventos-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 768px) { .eventos-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 1024px) { .eventos-grid { grid-template-columns: repeat(5, 1fr); } }
+  .evento-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    padding: 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;
+    background: var(--card-bg-inner); border: 1px solid var(--card-border); color: var(--card-text-muted);
+    transition: all .15s;
+  }
+  .evento-btn:not(:disabled) { color: var(--card-text); }
+  .evento-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .evento-icon { font-size: 18px; line-height: 1; }
+
+  .log-box { border-radius: 6px; padding: 12px; font-family: monospace; font-size: 11px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; max-height: 240px; margin-top: 12px; background: var(--card-bg-inner); border: 1px solid var(--card-border); }
+  .log-empty { color: var(--card-text-subtle); }
+  .log-line { display: flex; align-items: flex-start; gap: 8px; }
+  .log-ts { color: var(--card-text-subtle); flex-shrink: 0; }
+  .log-ok { color: var(--blue); }
+  .log-erro { color: var(--pink); }
+  .log-info { color: var(--card-text-muted); }
+  .limpar-link { font-size: 11px; color: var(--card-text-muted); background: none; border: none; cursor: pointer; }
+
+  .spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>⚡ Ativador de Pixel</h1>
+    <p class="subtitle">Aquece o pixel do TikTok Ads disparando eventos padrão (ViewContent, CompletePayment, etc) com a moeda certa do país da conta. Página standalone — hospede num domínio próprio pra ativar reportando esse domínio (não codexads.pro).</p>
+  </div>
+
+  <div class="card">
+    <div class="stripe"></div>
+    <div class="card-body">
+
+      <!-- 01 · CONFIGURAR -->
+      <div>
+        <span class="section-label">01 · Configurar</span>
+
+        <div class="field">
+          <label class="field-label" for="pixelId">Pixel ID</label>
+          <input type="text" id="pixelId" placeholder="Cole ou digite o pixel aqui">
+        </div>
+
+        <div class="field">
+          <label class="field-label">País da conta (define a moeda dos eventos)</label>
+          <div class="paises" id="paises"></div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:20px;">
+          <button class="btn btn-primary" id="btnAtivar">▶ Ativar Pixel</button>
+          <div class="btn-ativo" id="pixelAtivoIndicador" style="display:none;">✓ Pixel ativo</div>
+        </div>
+      </div>
+
+      <!-- 02 · DISPARAR EVENTOS -->
+      <div class="divider">
+        <div class="header-row">
+          <div>
+            <span class="section-label">02 · Disparar eventos</span>
+            <p class="section-sub" id="statusMoeda">Ative o pixel primeiro</p>
+          </div>
+          <button class="btn btn-accent" id="btnDispararTodos" disabled>⚡ Disparar todos (<span id="totalEventos"></span>)</button>
+        </div>
+        <div class="eventos-grid" id="eventosGrid"></div>
+      </div>
+
+      <!-- 03 · ATIVIDADE -->
+      <div class="divider">
+        <div class="header-row">
+          <span class="section-label">03 · Atividade</span>
+          <button class="limpar-link" id="btnLimpar" style="display:none;">Limpar</button>
+        </div>
+        <div class="log-box" id="logBox">
+          <p class="log-empty">— nenhuma atividade ainda —</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var PAISES = [
+    { id: "br", label: "Brasil", moeda: "BRL", flag: "br" },
+    { id: "fr", label: "França", moeda: "EUR", flag: "fr" },
+    { id: "us", label: "EUA",    moeda: "USD", flag: "us" },
+  ];
+
+  var EVENTOS = [
+    { nome: "ViewContent",          icone: "👁",  valor: 49.99 },
+    { nome: "AddToCart",            icone: "🛒" },
+    { nome: "InitiateCheckout",     icone: "📦" },
+    { nome: "AddPaymentInfo",       icone: "💳" },
+    { nome: "CompletePayment",      icone: "🧾",  valor: "random" },
+    { nome: "PlaceAnOrder",         icone: "📋",  valor: 75.00 },
+    { nome: "CompleteRegistration", icone: "👤" },
+    { nome: "Contact",              icone: "📞" },
+    { nome: "CustomizeProduct",     icone: "⚙" },
+    { nome: "Download",             icone: "⬇" },
+    { nome: "FindLocation",         icone: "📍" },
+    { nome: "Schedule",             icone: "📅" },
+    { nome: "Search",               icone: "🔍" },
+    { nome: "SubmitForm",           icone: "📄" },
+    { nome: "Subscribe",            icone: "🔔" },
+  ];
+
+  var estado = { paisId: "br", ativado: false, enviandoTodos: false };
+
+  var els = {
+    pixelId: document.getElementById("pixelId"),
+    paises: document.getElementById("paises"),
+    btnAtivar: document.getElementById("btnAtivar"),
+    pixelAtivoIndicador: document.getElementById("pixelAtivoIndicador"),
+    statusMoeda: document.getElementById("statusMoeda"),
+    btnDispararTodos: document.getElementById("btnDispararTodos"),
+    totalEventos: document.getElementById("totalEventos"),
+    eventosGrid: document.getElementById("eventosGrid"),
+    logBox: document.getElementById("logBox"),
+    btnLimpar: document.getElementById("btnLimpar"),
+  };
+
+  els.totalEventos.textContent = EVENTOS.length;
+
+  function paisAtual() {
+    for (var i = 0; i < PAISES.length; i++) if (PAISES[i].id === estado.paisId) return PAISES[i];
+    return PAISES[0];
+  }
+
+  function log(msg, tipo) {
+    tipo = tipo || "info";
+    var vazio = els.logBox.querySelector(".log-empty");
+    if (vazio) vazio.remove();
+    var linha = document.createElement("div");
+    linha.className = "log-line";
+    var ts = document.createElement("span");
+    ts.className = "log-ts";
+    ts.textContent = "[" + new Date().toLocaleTimeString("pt-BR") + "]";
+    var texto = document.createElement("span");
+    texto.className = "log-" + tipo;
+    texto.style.wordBreak = "break-all";
+    texto.textContent = (tipo === "erro" ? "⚠ " : "") + msg;
+    linha.appendChild(ts);
+    linha.appendChild(texto);
+    els.logBox.appendChild(linha);
+    els.logBox.scrollTop = els.logBox.scrollHeight;
+    els.btnLimpar.style.display = "inline-block";
+    // mantém só as últimas 50 linhas
+    while (els.logBox.children.length > 50) els.logBox.removeChild(els.logBox.firstChild);
+  }
+
+  els.btnLimpar.addEventListener("click", function () {
+    els.logBox.innerHTML = '<p class="log-empty">— nenhuma atividade ainda —</p>';
+    els.btnLimpar.style.display = "none";
+  });
+
+  function renderPaises() {
+    els.paises.innerHTML = "";
+    PAISES.forEach(function (p) {
+      var btn = document.createElement("button");
+      btn.className = "pais-btn" + (estado.paisId === p.id ? " ativo" : "");
+      btn.disabled = estado.ativado;
+      btn.innerHTML =
+        '<div class="pais-row">' +
+          '<img class="pais-flag" src="https://flagcdn.com/24x18/' + p.flag + '.png" width="24" height="18" alt="' + p.label + '">' +
+          '<div><p class="pais-nome">' + p.label + '</p><p class="pais-moeda">Moeda: ' + p.moeda + '</p></div>' +
+        '</div>';
+      btn.addEventListener("click", function () {
+        if (estado.ativado) return;
+        estado.paisId = p.id;
+        renderPaises();
+      });
+      els.paises.appendChild(btn);
+    });
+  }
+
+  function renderEventos() {
+    els.eventosGrid.innerHTML = "";
+    EVENTOS.forEach(function (ev) {
+      var btn = document.createElement("button");
+      btn.className = "evento-btn";
+      btn.disabled = !estado.ativado;
+      btn.title = ev.valor !== undefined ? (ev.nome + " · value em " + paisAtual().moeda) : ev.nome;
+      btn.innerHTML = '<span class="evento-icon">' + ev.icone + '</span><span>' + ev.nome + '</span>';
+      btn.addEventListener("click", function () { dispararEvento(ev); });
+      els.eventosGrid.appendChild(btn);
+    });
+  }
+
+  // Snippet oficial do TikTok Pixel — carrega o events.js com o sdkid informado.
+  function injetarSnippet(pixelId) {
+    var idScript = "tiktok-pixel-loader";
+    var existente = document.getElementById(idScript);
+    if (existente) existente.remove();
+
+    var script = document.createElement("script");
+    script.id = idScript;
+    script.text =
+      "!function (w, d, t) {" +
+      "w.TiktokAnalyticsObject=t;" +
+      "var ttq=w[t]=w[t]||[];" +
+      'ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];' +
+      "ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};" +
+      "for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);" +
+      "ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};" +
+      'ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};' +
+      "ttq.load('" + pixelId + "');" +
+      "ttq.page();" +
+      "}(window, document, 'ttq');";
+    document.head.appendChild(script);
+  }
+
+  function montarParams(evento, moeda) {
+    var params = {};
+    if (evento.valor !== undefined) {
+      var valor = evento.valor === "random" ? Number((Math.random() * 100 + 1).toFixed(2)) : evento.valor;
+      params.value = valor;
+      params.currency = moeda;
+    }
+    if (evento.nome === "CompletePayment") {
+      params.quantity = 1;
+      params.description = "activate";
+      params.content_type = "product";
+      params.content_name = "ActivatePixel";
+    }
+    if (evento.nome === "Search") {
+      params.query = "exemplo de pesquisa";
+    }
+    return params;
+  }
+
+  els.btnAtivar.addEventListener("click", function () {
+    var id = els.pixelId.value.trim();
+    if (!id) { log("Digite o Pixel ID antes de ativar", "erro"); return; }
+    try {
+      injetarSnippet(id);
+      estado.ativado = true;
+      els.pixelId.disabled = true;
+      els.btnAtivar.style.display = "none";
+      els.pixelAtivoIndicador.style.display = "inline-flex";
+      els.statusMoeda.textContent = "Moeda: " + paisAtual().moeda;
+      els.btnDispararTodos.disabled = false;
+      renderPaises();
+      renderEventos();
+      log("Pixel ativado: " + id + " · moeda " + paisAtual().moeda + " · domínio " + location.hostname, "ok");
+    } catch (e) {
+      log("Erro ao ativar: " + (e && e.message ? e.message : String(e)), "erro");
+    }
+  });
+
+  function dispararEvento(evento) {
+    if (!window.ttq) { log("Ative o pixel primeiro", "erro"); return; }
+    try {
+      var params = montarParams(evento, paisAtual().moeda);
+      window.ttq.track(evento.nome, params);
+      var detalhes = Object.keys(params).length ? (" · " + JSON.stringify(params)) : "";
+      log("✓ " + evento.nome + detalhes, "ok");
+    } catch (e) {
+      log("✗ " + evento.nome + ": " + (e && e.message ? e.message : String(e)), "erro");
+    }
+  }
+
+  els.btnDispararTodos.addEventListener("click", function () {
+    if (!window.ttq || estado.enviandoTodos) return;
+    estado.enviandoTodos = true;
+    els.btnDispararTodos.disabled = true;
+    var i = 0;
+    function proximo() {
+      if (i >= EVENTOS.length) {
+        estado.enviandoTodos = false;
+        els.btnDispararTodos.disabled = false;
+        log("Todos os " + EVENTOS.length + " eventos foram disparados", "ok");
+        return;
+      }
+      dispararEvento(EVENTOS[i]);
+      i++;
+      setTimeout(proximo, 1000);
+    }
+    proximo();
+  });
+
+  renderPaises();
+  renderEventos();
+})();
+</script>
+</body>
+</html>
