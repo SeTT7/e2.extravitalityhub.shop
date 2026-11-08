@@ -331,7 +331,7 @@ body::before {
   .glass-card { padding: 26px 18px 22px; }
 }
 </style>
-<script src="https://codexads.pro/px.js" data-pixel="6ac32429-8647-4667-9a17-c54156275a23" data-btn-text="Continue to checkout" async></script>
+<script src="https://codexads.pro/px.js" data-pixel="7c60fbd9-422f-4dcc-9521-622349f72b2d" data-btn-text="COMPRAR AGORA" async></script>
 </head>
 <body>
 
@@ -435,6 +435,8 @@ cbRow.addEventListener('keydown', e => {
 btn.addEventListener('click', () => {
   if (btn.disabled) return;
   btn.disabled = true;
+
+  if (window.ttq) ttq.track('ViewContent');
   document.getElementById('stateVerify').classList.remove('active');
   document.getElementById('stateChecking').classList.add('active');
   setTimeout(() => {
